@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Order</title>
+</head>
+<body>
+<section>
+    <div class="container mt-5">
+
+        <!-- success/error messages -->
+        <th:block th:if="${session.successMsg}">
+            <p class="text-success fw-bold text-center mt-2">[[${session.successMsg}]]</p>
+            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+        </th:block>
+        <th:block th:if="${session.errorMsg}">
+            <p class="text-danger fw-bold text-center mt-2">[[${session.errorMsg}]]</p>
+            <th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+        </th:block>
+
+        <!-- ✅ Single form wrapping BOTH sides so all fields submit together -->
+        <form th:action="@{/user/save-order}" method="post">
+            <div class="row">
+
+                <!-- LEFT: Address fields -->
+                <div class="col-md-6">
+                    <p class="fs-4 text-center">Please Fill Up</p>
+                    <hr>
+
+                    <div class="mb-3 row">
+                        <div class="col">
+                            <input type="text" name="firstName" placeholder="First Name"
+                                   class="form-control" required>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="lastName" placeholder="Last Name"
+                                   class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <div class="col">
+                            <input type="email" name="email" placeholder="Email"
+                                   class="form-control" required>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="mobile" placeholder="Mobile"
+                                   class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <div class="col">
+                            <input type="text" name="address" placeholder="Address"
+                                   class="form-control" required>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="city" placeholder="City"
+                                   class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <div class="col">
+                            <input type="text" name="state" placeholder="State"
+                                   class="form-control" required>
+                        </div>
+                        <div class="col">
+                            <!-- ✅ FIXED: name was "pincode" but ProductOrderRequest uses "pinCode" -->
+                            <input type="text" name="pinCode" placeholder="PIN Code"
+                                   class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Payment -->
+                <div class="col-md-6">
+                    <p class="fs-4 text-center">Payment Type</p>
+                    <hr>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tbody>
+                                <tr>
+                                    <td>Total Price</td>
+                                    <td>:</td>
+                                    <td>&#8377; [[${orderPrice}]]</td>
+                                </tr>
+                                <tr>
+                                    <td>Delivery Cost</td>
+                                    <td>:</td>
+                                    <td>&#8377; 250</td>
+                                </tr>
+                                <tr>
+                                    <td>Tax</td>
+                                    <td>:</td>
+                                    <td>&#8377; 100</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total Order Price</strong></td>
+                                    <td>:</td>
+                                    <td><strong>&#8377; [[${totalOrderPrice}]]</strong></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="card shadow p-3 mb-5 bg-body rounded">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label class="form-label">Select Payment Type</label>
+                                <!-- ✅ FIXED: added name="paymentType" so it gets submitted -->
+                                <select class="form-control" name="paymentType" required>
+                                    <option value="">--- Select ---</option>
+                                    <option value="Cash On Delivery">Cash On Delivery</option>
+                                    <option value="Online Payment">Online Payment</option>
+                                </select>
+                            </div>
+
+                            <!-- ✅ This button now submits the whole form to /user/save-order -->
+                            <button type="submit" class="btn btn-danger col-md-12">Place Order</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</section>
+</body>
+</html>
